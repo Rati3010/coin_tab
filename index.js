@@ -8,7 +8,7 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 
-app.get("/fetchusers", async (req, res) => {
+app.get("/", async (req, res) => {
   try {
     const data = await fetch("https://randomuser.me/api/?results=50");
     const user = await data.json();
@@ -26,7 +26,7 @@ app.get("/fetchusers", async (req, res) => {
     res.send("failure");
   }
 });
-app.delete("/deleteusers", async (req, res) => {
+app.delete("/", async (req, res) => {
   try {
     await UserModel.deleteMany({});
     res.send("Success");
