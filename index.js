@@ -3,11 +3,16 @@ import { connection } from "./config/db.js";
 import fetch from "node-fetch";
 import dotenv from "dotenv";
 import { UserModel } from "./models/userModel.js";
+import cors from "cors";
 dotenv.config();
 
 const app = express();
 app.use(express.json());
-
+app.use(
+  cors({
+    origin: "*",
+  })
+);
 app.get("/", async (req, res) => {
   try {
     const data = await fetch("https://randomuser.me/api/?results=50");
@@ -41,9 +46,9 @@ app.get("/userdetails", async (req, res) => {
     const users = await UserModel.find()
       .limit(limit * 1)
       .skip((page - 1) * limit);
-      res.status(200).json({total:users.length, users})
+    res.status(200).json({ total: users.length, users });
   } catch (error) {
-    res.status(500).json({error:'failed'})
+    res.status(500).json({ error: "failed" });
   }
 });
 app.listen(process.env.port, async () => {
