@@ -25,19 +25,18 @@ app.get("/", async (req, res) => {
       const new_user = new UserModel(result[i]);
       await new_user.save();
     }
-    res.send("success");
+    res.status(200).json({ message: "Succesfully added to the database" });
   } catch (error) {
     console.log(error);
-    res.send("failure");
+    res.status(500).json({ message: "Unable to add to the database" });
   }
 });
 app.delete("/", async (req, res) => {
   try {
     await UserModel.deleteMany({});
-    res.send("Success");
+    res.status(200).json({ message: "Deleted users succesfully" });
   } catch (error) {
-    console.log(error);
-    res.send("Unable to delete");
+    res.status(500).json({ message: "Deletion Failed" });
   }
 });
 app.get("/userdetails", async (req, res) => {
@@ -48,7 +47,7 @@ app.get("/userdetails", async (req, res) => {
       .skip((page - 1) * limit);
     res.status(200).json({ total: users.length, users });
   } catch (error) {
-    res.status(500).json({ error: "failed" });
+    res.status(500).json({ error: "Unable to get the data" });
   }
 });
 app.listen(process.env.port, async () => {
