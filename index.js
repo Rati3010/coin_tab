@@ -8,19 +8,42 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 
-app.get("/fetchdata", async (req, res) => {
+app.get("/fetchusers", async (req, res) => {
   try {
     const data = await fetch("https://randomuser.me/api/?results=50");
     const user = await data.json();
     const result = user.results;
     for (let i = 0; i < result.length; i++) {
-        const new_user = new UserModel(result[i]);
-        await new_user.save();
+      result[i]["user_id"] = result[i]["id"];
+      delete result[i]["id"];
+      console.log(result[i]);
+      const new_user = new UserModel(result[i]);
+      await new_user.save();
     }
     res.send("success");
   } catch (error) {
-    console.log(error)
+    console.log(error);
     res.send("failure");
+  }
+});
+app.delete("/deleteusers", async (req, res) => {
+  try {
+    await UserModel.deleteMany({});
+    res.send("Success");
+  } catch (error) {
+    console.log(error);
+    res.send("Unable to delete");
+  }
+});
+app.get("/userdetails", async (req, res) => {
+  try {
+    const { page = 1, limit = 10 } = req.query;
+    const users = await UserModel.find()
+      .limit(limit * 1)
+      .skip((page - 1) * limit);
+      res.status(200).json({total:users.length, users})
+  } catch (error) {
+    res.status(500).json({error:'failed'})
   }
 });
 app.listen(process.env.port, async () => {
