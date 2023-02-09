@@ -14,8 +14,9 @@ app.use(
   })
 );
 app.get("/", async (req, res) => {
+    let random_users = Math.floor((Math.random() * 50) + 50);
   try {
-    const data = await fetch("https://randomuser.me/api/?results=50");
+    const data = await fetch(`https://randomuser.me/api/?results=${random_users}`);
     const user = await data.json();
     const result = user.results;
     for (let i = 0; i < result.length; i++) {
@@ -41,8 +42,8 @@ app.delete("/", async (req, res) => {
 });
 app.get("/userdetails", async (req, res) => {
   try {
-    const { page = 1, limit = 10 } = req.query;
-    const users = await UserModel.find()
+    const { page = 1, limit = 10,age=1 } = req.query;
+    const users = await UserModel.find({age:{$gte:age}})
       .limit(limit * 1)
       .skip((page - 1) * limit);
     res.status(200).json({ total: users.length, users });
