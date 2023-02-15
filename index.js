@@ -15,6 +15,7 @@ app.use(
 );
 app.get("/", async (req, res) => {
   let random_users = Math.floor(Math.random() * 50 + 50);
+
   try {
     const data = await fetch(
       `https://randomuser.me/api/?results=${random_users}`
@@ -44,7 +45,7 @@ app.delete("/", async (req, res) => {
 });
 app.get("/userdetails", async (req, res) => {
   try {
-    const { page = 1, limit = 10, gender = "" } = req.query;
+    const { page = 1, limit = 20, gender = "" } = req.query;
     if (gender !== "") {
       const users = await UserModel.find({ gender })
         .limit(limit * 1)
